@@ -331,7 +331,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return "No connection";
             }
 
-            String login_url = "http://192.168.2.8:81/api/login2.php";
+            String login_url = "http://192.168.1.31:81/api/login2.php";
             try {
                 String user_name = params[0];
                 String password = params[1];

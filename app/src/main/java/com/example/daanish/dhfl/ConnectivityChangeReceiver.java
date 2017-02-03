@@ -23,8 +23,13 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         final Context ctx = context;
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //if( in settings only wifi)
+        //NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //else
+        SessionManager sm = new SessionManager(context);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()){
+        if (networkInfo != null && networkInfo.isConnected() && sm.checkWifiState()){  //if some error, just remove sm.checkWifiState()
             new Thread(new Runnable() {
                 public void run() {
                     try {

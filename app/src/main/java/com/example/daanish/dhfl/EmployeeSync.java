@@ -58,7 +58,7 @@ class EmployeePull extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        String login_url = "http://192.168.2.8:81/api/pull_emp.php";
+        String login_url = "http://192.168.1.31:81/api/pull_emp.php";
         String result = "";
 
         try {

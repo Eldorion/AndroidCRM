@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -39,6 +41,7 @@ public class SessionManager {
     public static final String KEY_TITLE = "title";
     public static final String KEY_USER_EMAIL = "user_email";
     public static final String KEY_AUTO_SYNC = "auto_sync";
+    public static final String KEY_ONLY_WIFI = "only_wifi";
     public static final String KEY_FIRST_LOGIN = "first_login";
 
     // Constructor
@@ -76,6 +79,7 @@ public class SessionManager {
         editor.putString(KEY_TITLE, title);
         editor.putString(KEY_USER_EMAIL, user_email);
         editor.putBoolean(KEY_AUTO_SYNC, false);
+        editor.putBoolean(KEY_ONLY_WIFI, false);
         // commit changes
         editor.commit();
     }
@@ -84,9 +88,14 @@ public class SessionManager {
         editor.putBoolean(KEY_AUTO_SYNC, pref);
         editor.commit();
     }
+    public void saveSyncWifi(boolean pref){
+        editor.putBoolean(KEY_ONLY_WIFI, pref);
+        editor.commit();
+    }
     public HashMap<String, Boolean> getSyncPref(){
         HashMap<String, Boolean> syncPref = new HashMap();
         syncPref.put(KEY_AUTO_SYNC, pref.getBoolean(KEY_AUTO_SYNC, false));
+        syncPref.put(KEY_ONLY_WIFI, pref.getBoolean(KEY_ONLY_WIFI, false));
         return syncPref;
     }
 
@@ -152,7 +161,7 @@ public class SessionManager {
      * */
     public void logoutUser(){
         // Clearing all data from Shared Preferences
-        editor.putBoolean("IS_LOGIN", false);
+        editor.putBoolean(IS_LOGIN, false);
         editor.commit();
 
         Intent intent = new Intent("logout");
@@ -186,6 +195,19 @@ public class SessionManager {
     // Get Login State
     public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
+    }
+
+    public boolean checkWifiState(){
+        if(pref.getBoolean(KEY_ONLY_WIFI, false)==false)
+            return true;
+        else{
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo.getType()==ConnectivityManager.TYPE_WIFI) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
